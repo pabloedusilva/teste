@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sabor Brasil</title>
+        <link rel="shortcut icon" href="images/logo_sabor_brasil.jpg"
+            type="image/x-icon">
+        <link rel="stylesheet" href="./css/style.css">
+        <style>
+        body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+}
+
+.perfil {
+    position: fixed;
+    width: 250px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+#logo-empresa {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+#nome-empresa {
+    font-size: 1.8em;
+    color: #D97014;
+    margin: 10px 0;
+}
+
+.perfil p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.principal {
+    margin-left: 270px;
+    flex-grow: 1;
+    padding: 40px;
+    border: 1px solid #C2BEBE;
+}
+
+.principal h2 {
+    font-size: 2em;
+    color: #000000;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.publicacao {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.publicacao img {
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.publicacao h3 {
+    font-size: 1.5em;
+    color: #D97014;
+    margin: 0 0 10px;
+}
+
+.publicacao p {
+    color: #666;
+    margin: 0 0 15px;
+}
+
+.interacoes {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.interacoes img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.interacoes img.active.like {
+    filter: invert(47%) sepia(99%) saturate(1352%) hue-rotate(80deg) brightness(95%) contrast(93%);
+}
+
+.interacoes img.active.dislike {
+    filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+.interacoes span {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.comentario-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #E8ECEF;
+    border-radius: 10px;
+}
+
+.input-comentario {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px; /* Espaço maior entre o botão e os comentários */
+}
+
+.comentario-container input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #D97014;
+    border-radius: 5px;
+}
+
+.comentario-container button {
+    background-color: #D97014;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comentarios-lista {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.comentario-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #D97014;
+}
+
+.comentario-item p {
+    margin: 0;
+    flex-grow: 1;
+    color: #555;
+}
+
+.comentario-item img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.comentario-item .editar {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* #FFFFFF */
+}
+
+.comentario-item .excluir {
+    filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(100%) contrast(100%); /* #FF0000 */
+}
+
+/* Estilos para botões de Editar e Excluir na publicação */
+.publicacao .editar-publicacao, .publicacao .excluir-publicacao {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.publicacao .editar-publicacao {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* Branco */
+}
+
+.publicacao .excluir-publicacao {
+    filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(100%) contrast(100%); /* Vermelho */
+}
+
+.modal-excluir {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-excluir-conteudo {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-excluir-conteudo p {
+    margin: 0 0 20px;
+    color: #555;
+}
+
+.modal-excluir-conteudo button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btn-excluir-sim {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    margin-right: 10px;
+}
+
+#btn-excluir-nao {
+    background-color: transparent;
+    border: 1px solid #D97014;
+    color: #D97014;
+}
+
+.login {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#btn-login, #btn-ir-cadastro, #btn-cadastrar-pet {
+    background-color: #D97014;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.modal-login, .modal-cadastrar-pet, .modal-editar-pet {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-conteudo {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    width: 350px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-conteudo h2 {
+    color: #D97014;
+    margin-bottom: 20px;
+}
+
+.modal-conteudo input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #D97014;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#btn-cancelar, #btn-cancelar-pet, #btn-cancelar-editar {
+    background-color: transparent;
+    border: 1px solid #D97014;
+    color: #D97014;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#btn-entrar, #btn-salvar-pet, #btn-salvar-editar {
+    background-color: #D97014;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #D97014;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+}
+
+.social {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .perfil {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .principal {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .login {
+        position: static;
+        justify-content: center;
+        padding: 20px;
+    }
+}
+
+/* ... (outros estilos permanecem iguais) */
+
+.login {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#btn-login, #btn-ir-cadastro, #btn-cadastrar-pet, #btn-minhas-publicacoes, #btn-voltar-inicial {
+    background-color: #D97014;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ... (outros estilos permanecem iguais) */
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <aside class="perfil">
+                <img id="logo-empresa" src="images/logo_sabor_brasil.jpg"
+                    alt="Logo Sabor Brasil">
+                <h2 id="nome-empresa">Sabor Brasil</h2>
+                <hr style="border-color: #D97014;">
+                <p>Likes: <span id="total-likes">0</span></p>
+                <p>Dislikes: <span id="total-dislikes">0</span></p>
+            </aside>
+
+            <main class="principal">
+                <h2>Publicações</h2>
+                <!-- Os posts serão carregados dinamicamente aqui -->
+            </main>
+
+            <aside class="login">
+                <button id="btn-login">Login</button>
+                <button id="btn-ir-cadastro">Cadastre-se</button>
+                <button id="btn-cadastrar-pet" style="display: none;">Adicionar
+                    Publicação</button>
+                <button id="btn-minhas-publicacoes"
+                    style="display: none;">Minhas Publicações</button>
+            </aside>
+        </div>
+
+        <footer>
+            <p>Sabor Brasil</p>
+            <p class="social">
+                <img src="images/Instagram.svg" alt="Instagram" width="20px">
+                <img src="images/Twitter.svg" alt="Twitter" width="20px">
+                <img src="images/Whatsapp.svg" alt="Whatsapp" width="20px">
+                <img src="images/Globe.svg" alt="Globe" width="20px">
+            </p>
+            <p>Copyright-2025</p>
+        </footer>
+
+        <!-- Modal de Login -->
+        <div class="modal-login" id="modal-login">
+            <div class="modal-conteudo">
+                <h2>Login</h2>
+                <input type="text" id="nickname" placeholder="Nickname"
+                    required>
+                <input type="password" id="senha" placeholder="Senha" required>
+                <button id="btn-cancelar">Cancelar</button>
+                <button id="btn-entrar">Entrar</button>
+                <p class="mensagem-erro" id="mensagem-erro"></p>
+            </div>
+        </div>
+
+        <!-- Modal de Cadastro de Pet -->
+        <div class="modal-cadastrar-pet" id="modal-cadastrar-pet"
+            style="display: none;">
+            <div class="modal-conteudo">
+                <h2>Adicionar Publicação</h2>
+                <input type="file" id="foto-pet" accept="image/*" required>
+                <input type="text" id="nome-pet" placeholder="Nome da Postagem"
+                    required>
+                <input type="text" id="local-pet" placeholder="Legenda"
+                    required>
+                <input type="text" id="cidade-pet" placeholder="Localização"
+                    required>
+                <button id="btn-cancelar-pet">Cancelar</button>
+                <button id="btn-salvar-pet">Salvar</button>
+                <p class="mensagem-erro" id="mensagem-erro-pet"></p>
+            </div>
+        </div>
+
+        <!-- Modal de Edição de Pet -->
+        <div class="modal-editar-pet" id="modal-editar-pet"
+            style="display: none;">
+            <div class="modal-conteudo">
+                <h2>Editar Pet</h2>
+                <input type="file" id="foto-pet-editar" accept="image/*">
+                <input type="file" id="foto-pet" accept="image/*" required>
+                <input type="text" id="nome-pet" placeholder="Nome da Postagem"
+                    required>
+                <input type="text" id="local-pet" placeholder="Legenda"
+                    required>
+                <input type="text" id="cidade-pet" placeholder="Localização"
+                    required>
+                <button id="btn-cancelar-editar">Cancelar</button>
+                <button id="btn-salvar-editar">Salvar</button>
+                <p class="mensagem-erro" id="mensagem-erro-editar"></p>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const modalLogin = document.getElementById("modal-login");
+    const btnCancelar = document.getElementById("btn-cancelar");
+    const btnEntrar = document.getElementById("btn-entrar");
+    const btnIrCadastro = document.getElementById("btn-ir-cadastro");
+    const btnLogin = document.getElementById("btn-login");
+    const mensagemErro = document.getElementById("mensagem-erro");
+    const totalLikes = document.getElementById("total-likes");
+    const totalDislikes = document.getElementById("total-dislikes");
+    const btnCadastrarPet = document.getElementById("btn-cadastrar-pet");
+    const modalCadastrarPet = document.getElementById("modal-cadastrar-pet");
+    const btnCancelarPet = document.getElementById("btn-cancelar-pet");
+    const btnSalvarPet = document.getElementById("btn-salvar-pet");
+    const mensagemErroPet = document.getElementById("mensagem-erro-pet");
+    const modalEditarPet = document.getElementById("modal-editar-pet");
+    const btnCancelarEditar = document.getElementById("btn-cancelar-editar");
+    const btnSalvarEditar = document.getElementById("btn-salvar-editar");
+    const mensagemErroEditar = document.getElementById("mensagem-erro-editar");
+    const btnMinhasPublicacoes = document.getElementById("btn-minhas-publicacoes");
+    const btnVoltarInicial = document.getElementById("btn-voltar-inicial");
+    let usuarioLogado = localStorage.getItem('usuarioLogado');
+    let usuarioLogadoId = localStorage.getItem('usuarioLogadoId');
+
+    function atualizarInterfaceLogin() {
+        if (usuarioLogado && btnLogin) {
+            btnLogin.textContent = `Olá, ${usuarioLogado}`;
+            if (btnIrCadastro) btnIrCadastro.style.display = "none";
+            if (btnCadastrarPet) btnCadastrarPet.style.display = "block";
+            if (btnMinhasPublicacoes) btnMinhasPublicacoes.style.display = "block";
+            if (btnVoltarInicial) btnVoltarInicial.style.display = "block";
+            let btnSair = document.getElementById("btn-sair");
+            if (!btnSair) {
+                btnSair = document.createElement("button");
+                btnSair.id = "btn-sair";
+                btnSair.textContent = "Sair";
+                btnSair.style.backgroundColor = "#D97014";
+                btnSair.style.color = "white";
+                btnSair.style.border = "none";
+                btnSair.style.padding = "10px 20px";
+                btnSair.style.borderRadius = "20px";
+                btnSair.style.cursor = "pointer";
+                btnIrCadastro.parentNode.insertBefore(btnSair, btnIrCadastro.nextSibling);
+
+                btnSair.addEventListener("click", () => {
+                    localStorage.removeItem('usuarioLogado');
+                    localStorage.removeItem('usuarioLogadoId');
+                    usuarioLogado = null;
+                    usuarioLogadoId = null;
+                    location.reload();
+                });
+            }
+        } else {
+            if (btnIrCadastro) btnIrCadastro.style.display = "block";
+            if (btnCadastrarPet) btnCadastrarPet.style.display = "none";
+            if (btnMinhasPublicacoes) btnMinhasPublicacoes.style.display = "none";
+            if (btnVoltarInicial) btnVoltarInicial.style.display = "none";
+            const btnSair = document.getElementById("btn-sair");
+            if (btnSair) btnSair.remove();
+        }
+    }
+
+    atualizarInterfaceLogin();
+
+    if (btnIrCadastro) {
+        btnIrCadastro.addEventListener("click", () => {
+            window.location.href = "cadastro.html";
+        });
+    }
+
+    if (btnLogin) {
+        btnLogin.addEventListener("click", function () {
+            if (modalLogin && !usuarioLogado) modalLogin.style.display = "block";
+        });
+    }
+
+    if (btnCancelar) {
+        btnCancelar.addEventListener("click", function () {
+            if (modalLogin) modalLogin.style.display = "none";
+        });
+    }
+
+    if (btnEntrar) {
+        btnEntrar.addEventListener("click", function () {
+            const nickname = document.getElementById("nickname").value;
+            const senha = document.getElementById("senha").value;
+
+            fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nickname, senha })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('usuarioLogado', nickname);
+                    localStorage.setItem('usuarioLogadoId', data.usuarioId);
+                    usuarioLogado = nickname;
+                    usuarioLogadoId = data.usuarioId;
+                    if (modalLogin) modalLogin.style.display = "none";
+                    atualizarInterfaceLogin();
+                    carregarPublicacoes();
+                } else if (mensagemErro) {
+                    mensagemErro.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao fazer login:', error);
+                if (mensagemErro) mensagemErro.textContent = "Ocorreu um erro. Tente novamente.";
+            });
+        });
+    }
+
+    if (btnCadastrarPet) {
+        btnCadastrarPet.addEventListener("click", () => {
+            if (modalCadastrarPet) modalCadastrarPet.style.display = "block";
+        });
+    }
+
+    if (btnCancelarPet) {
+        btnCancelarPet.addEventListener("click", () => {
+            if (modalCadastrarPet) modalCadastrarPet.style.display = "none";
+            limparModalPet();
+        });
+    }
+
+    if (btnSalvarPet) {
+        btnSalvarPet.addEventListener("click", () => {
+            const fotoInput = document.getElementById("foto-pet");
+            const nomePet = document.getElementById("nome-pet").value;
+            const localPet = document.getElementById("local-pet").value;
+            const cidadePet = document.getElementById("cidade-pet").value;
+
+            if (!fotoInput.files[0] || !nomePet || !localPet || !cidadePet) {
+                if (mensagemErroPet) mensagemErroPet.textContent = "Todos os campos são obrigatórios.";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("foto", fotoInput.files[0]);
+            formData.append("nome_pet", nomePet);
+            formData.append("local", localPet);
+            formData.append("cidade", cidadePet);
+            formData.append("usuarioid", usuarioLogadoId);
+
+            fetch('http://localhost:3000/cadastrar-pet', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (modalCadastrarPet) modalCadastrarPet.style.display = "none";
+                    limparModalPet();
+                    carregarPublicacoes();
+                } else if (mensagemErroPet) {
+                    mensagemErroPet.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao cadastrar pet:', error);
+                if (mensagemErroPet) mensagemErroPet.textContent = "Ocorreu um erro. Tente novamente.";
+            });
+        });
+    }
+
+    if (btnMinhasPublicacoes) {
+        btnMinhasPublicacoes.addEventListener("click", () => {
+            window.location.href = "minhas-publicacoes.html";
+        });
+    }
+
+    if (btnVoltarInicial) {
+        btnVoltarInicial.addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+    }
+
+    function limparModalPet() {
+        document.getElementById("foto-pet").value = "";
+        document.getElementById("nome-pet").value = "";
+        document.getElementById("local-pet").value = "";
+        document.getElementById("cidade-pet").value = "";
+        if (mensagemErroPet) mensagemErroPet.textContent = "";
+    }
+
+    const formCadastro = document.getElementById("form-cadastro");
+    if (formCadastro) {
+        formCadastro.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const nome = document.getElementById("nome-cadastro").value;
+            const email = document.getElementById("email-cadastro").value;
+            const nickname = document.getElementById("nickname-cadastro").value;
+            const senha = document.getElementById("senha-cadastro").value;
+
+            fetch('http://localhost:3000/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, nickname, senha })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('usuarioLogado', nickname);
+                    localStorage.setItem('usuarioLogadoId', data.usuarioId);
+                    usuarioLogado = nickname;
+                    usuarioLogadoId = data.usuarioId;
+                    alert("Cadastro realizado com sucesso!");
+                    window.location.href = "index.html";
+                } else {
+                    const mensagemErro = document.getElementById("mensagem-erro");
+                    if (mensagemErro) mensagemErro.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao fazer cadastro:', error);
+                const mensagemErro = document.getElementById("mensagem-erro");
+                if (mensagemErro) mensagemErro.textContent = "Ocorreu um erro. Tente novamente.";
+            });
+        });
+    }
+
+    async function carregarPublicacoes() {
+        if (window.location.pathname.includes("minhas-publicacoes.html")) {
+            await carregarMinhasPublicacoes();
+        } else {
+            const response = await fetch('/api/publicacoes');
+            const data = await response.json();
+            if (data.success) {
+                const principal = document.querySelector('.principal');
+                principal.innerHTML = '<h2>Publicações</h2>';
+                data.publicacoes.forEach(pub => {
+                    const publicacao = document.createElement('div');
+                    publicacao.classList.add('publicacao');
+                    publicacao.setAttribute('data-publicacao-id', pub.id_publicacao);
+                    publicacao.setAttribute('data-usuario-id', pub.usuarioid);
+                    publicacao.innerHTML = `
+                        <img src="${pub.foto}" width="100%" alt="${pub.nome_pet}">
+                        <h3>${pub.nome_pet}</h3>
+                        <p>${pub.local} - ${pub.cidade}</p>
+                        <div class="interacoes">
+                            <img src="images/flecha_cima_vazia.svg" alt="Like" class="like">
+                            <span class="likes">0</span>
+                            <img src="images/flecha_baixo_vazia.svg" alt="Dislike" class="dislike">
+                            <span class="dislikes">0</span>
+                            <img src="images/chat.svg" alt="Comentários" class="comentarios">
+                            <span class="num-comentarios">0</span>
+                            ${usuarioLogadoId && pub.usuarioid == usuarioLogadoId ? `
+                                <img src="images/editar.png" alt="Editar" class="editar-publicacao">
+                                <img src="images/excluir.png" alt="Excluir" class="excluir-publicacao">
+                            ` : ''}
+                        </div>
+                        <div class="comentario-container" style="display:none;">
+                            <div class="input-comentario">
+                                <input type="text" placeholder="Escreva um comentário...">
+                                <button class="btn-comentar">Enviar</button>
+                            </div>
+                            <div class="comentarios-lista"></div>
+                        </div>
+                    `;
+                    principal.appendChild(publicacao);
+                    principal.appendChild(document.createElement('br'));
+                });
+                carregarInteracoes();
+            } else {
+                console.error('Erro ao carregar publicações:', data.message);
+            }
+        }
+    }
+
+    async function carregarMinhasPublicacoes() {
+        if (!usuarioLogadoId) {
+            window.location.href = "index.html";
+            return;
+        }
+        const response = await fetch(`/api/minhas-publicacoes/${usuarioLogadoId}`);
+        const data = await response.json();
+        if (data.success) {
+            const principal = document.querySelector('.principal');
+            principal.innerHTML = '<h2>Minhas Publicações</h2>';
+            if (data.publicacoes.length === 0) {
+                principal.innerHTML += '<p>Você ainda não tem publicações.</p>';
+            } else {
+                data.publicacoes.forEach(pub => {
+                    const publicacao = document.createElement('div');
+                    publicacao.classList.add('publicacao');
+                    publicacao.setAttribute('data-publicacao-id', pub.id_publicacao);
+                    publicacao.setAttribute('data-usuario-id', pub.usuarioid);
+                    publicacao.innerHTML = `
+                        <img src="${pub.foto}" width="100%" alt="${pub.nome_pet}">
+                        <h3>${pub.nome_pet}</h3>
+                        <p>${pub.local} - ${pub.cidade}</p>
+                        <div class="interacoes">
+                            <img src="images/flecha_cima_vazia.svg" alt="Like" class="like">
+                            <span class="likes">0</span>
+                            <img src="images/flecha_baixo_vazia.svg" alt="Dislike" class="dislike">
+                            <span class="dislikes">0</span>
+                            <img src="images/chat.svg" alt="Comentários" class="comentarios">
+                            <span class="num-comentarios">0</span>
+                            <img src="images/editar.png" alt="Editar" class="editar-publicacao">
+                            <img src="images/excluir.png" alt="Excluir" class="excluir-publicacao">
+                        </div>
+                        <div class="comentario-container" style="display:none;">
+                            <div class="input-comentario">
+                                <input type="text" placeholder="Escreva um comentário...">
+                                <button class="btn-comentar">Enviar</button>
+                            </div>
+                            <div class="comentarios-lista"></div>
+                        </div>
+                    `;
+                    principal.appendChild(publicacao);
+                    principal.appendChild(document.createElement('br'));
+                });
+                carregarInteracoes();
+            }
+        } else {
+            console.error('Erro ao carregar minhas publicações:', data.message);
+        }
+    }
+
+    async function carregarInteracoes() {
+        const publicacoes = document.querySelectorAll(".publicacao");
+        if (!publicacoes.length) return;
+
+        const curtidasResponse = await fetch('/api/curtidas');
+        const curtidasData = await curtidasResponse.json();
+        const curtidas = curtidasData.success ? curtidasData.curtidas : {};
+
+        let usuarioCurtidas = { likes: 0, deslikes: 0, interacoes: {} };
+        if (usuarioLogadoId) {
+            const usuarioCurtidasResponse = await fetch(`/api/curtidas/usuario/${usuarioLogadoId}`);
+            const usuarioCurtidasData = await usuarioCurtidasResponse.json();
+            if (usuarioCurtidasData.success) {
+                usuarioCurtidas = {
+                    likes: usuarioCurtidasData.likes,
+                    deslikes: usuarioCurtidasData.deslikes,
+                    interacoes: usuarioCurtidasData.interacoes
+                };
+            }
+        }
+
+        const comentariosResponse = await fetch('/api/comentarios');
+        const comentariosData = await comentariosResponse.json();
+        const comentarios = comentariosData.success ? comentariosData.comentarios : {};
+
+        publicacoes.forEach(publicacao => {
+            const likeBtn = publicacao.querySelector(".like");
+            const dislikeBtn = publicacao.querySelector(".dislike");
+            const likeCount = publicacao.querySelector(".likes");
+            const dislikeCount = publicacao.querySelector(".dislikes");
+            const comentarioBtn = publicacao.querySelector(".comentarios");
+            const numComentarios = publicacao.querySelector(".num-comentarios");
+            const comentarioInput = publicacao.querySelector(".comentario-container input");
+            const comentarioEnviar = publicacao.querySelector(".btn-comentar");
+            const comentarioLista = publicacao.querySelector(".comentarios-lista");
+            const editarBtn = publicacao.querySelector(".editar-publicacao");
+            const excluirBtn = publicacao.querySelector(".excluir-publicacao");
+            const publicacaoId = publicacao.getAttribute("data-publicacao-id");
+
+            const curtida = curtidas[publicacaoId] || { likes: 0, deslikes: 0 };
+            likeCount.textContent = curtida.likes;
+            dislikeCount.textContent = curtida.deslikes;
+
+            const interacaoUsuario = usuarioCurtidas.interacoes[publicacaoId] || 'none';
+            if (interacaoUsuario === 'like') {
+                likeBtn.classList.add("active");
+                likeBtn.src = "images/flecha_cima_cheia.svg";
+                dislikeBtn.classList.remove("active");
+                dislikeBtn.src = "images/flecha_baixo_vazia.svg";
+            } else if (interacaoUsuario === 'deslike') {
+                dislikeBtn.classList.add("active");
+                dislikeBtn.src = "images/flecha_baixo_cheia.svg";
+                likeBtn.classList.remove("active");
+                likeBtn.src = "images/flecha_cima_vazia.svg";
+            } else {
+                likeBtn.classList.remove("active");
+                dislikeBtn.classList.remove("active");
+                likeBtn.src = "images/flecha_cima_vazia.svg";
+                dislikeBtn.src = "images/flecha_baixo_vazia.svg";
+            }
+
+            if (comentarios[publicacaoId]) {
+                numComentarios.textContent = comentarios[publicacaoId].length;
+                comentarioLista.innerHTML = '';
+                comentarios[publicacaoId].forEach(com => {
+                    const novoComentario = document.createElement("div");
+                    novoComentario.classList.add("comentario-item");
+                    novoComentario.setAttribute("data-comentario-id", com.id);
+                    novoComentario.innerHTML = `
+                        <p>${com.usuario}: ${com.texto}</p>
+                        ${com.usuario === usuarioLogado ? `
+                            <img src="images/editar.png" alt="Editar" class="editar">
+                            <img src="images/excluir.png" alt="Excluir" class="excluir">
+                        ` : ''}
+                    `;
+                    comentarioLista.appendChild(novoComentario);
+                });
+                // Adicionar eventos aos botões de editar e excluir após criar os comentários
+                adicionarEventosComentarios(publicacao);
+            } else {
+                numComentarios.textContent = 0;
+            }
+
+            comentarioBtn.addEventListener("click", function () {
+                publicacao.querySelector(".comentario-container").style.display = 
+                    publicacao.querySelector(".comentario-container").style.display === "none" ? "block" : "none";
+            });
+
+            comentarioEnviar.addEventListener("click", function () {
+                if (!usuarioLogadoId) {
+                    alert("Você precisa estar logado para comentar!");
+                    return;
+                }
+                if (comentarioInput.value.trim() !== "") {
+                    fetch('/comentario', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            usuarioid: usuarioLogadoId,
+                            publicacaoid: publicacaoId,
+                            comentario: comentarioInput.value
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const novoComentario = document.createElement("div");
+                            novoComentario.classList.add("comentario-item");
+                            novoComentario.setAttribute("data-comentario-id", data.comentarioId);
+                            novoComentario.innerHTML = `
+                                <p>${usuarioLogado}: ${comentarioInput.value}</p>
+                                <img src="images/editar.png" alt="Editar" class="editar">
+                                <img src="images/excluir.png" alt="Excluir" class="excluir">
+                            `;
+                            comentarioLista.appendChild(novoComentario);
+                            // Adicionar eventos ao novo comentário
+                            adicionarEventosComentarios(publicacao);
+                            comentarioInput.value = "";
+                            numComentarios.textContent = parseInt(numComentarios.textContent) + 1;
+                        }
+                    })
+                    .catch(error => console.error("Erro ao salvar comentário:", error));
+                }
+            });
+
+            likeBtn.addEventListener("click", async function () {
+                if (!usuarioLogadoId) {
+                    alert("Você precisa estar logado para curtir!");
+                    return;
+                }
+                const currentInteracao = usuarioCurtidas.interacoes[publicacaoId] || 'none';
+                const novaInteracao = currentInteracao === 'like' ? 'none' : 'like';
+                await atualizarInteracao(publicacaoId, novaInteracao, likeBtn, dislikeBtn, likeCount, dislikeCount, usuarioCurtidas);
+            });
+
+            dislikeBtn.addEventListener("click", async function () {
+                if (!usuarioLogadoId) {
+                    alert("Você precisa estar logado para descurtir!");
+                    return;
+                }
+                const currentInteracao = usuarioCurtidas.interacoes[publicacaoId] || 'none';
+                const novaInteracao = currentInteracao === 'deslike' ? 'none' : 'deslike';
+                await atualizarInteracao(publicacaoId, novaInteracao, likeBtn, dislikeBtn, likeCount, dislikeCount, usuarioCurtidas);
+            });
+
+            if (editarBtn) {
+                editarBtn.addEventListener("click", () => editarPublicacao(publicacao, publicacaoId));
+            }
+
+            if (excluirBtn) {
+                excluirBtn.addEventListener("click", () => excluirPublicacao(publicacaoId, publicacao));
+            }
+        });
+
+        totalLikes.textContent = usuarioCurtidas.likes;
+        totalDislikes.textContent = usuarioCurtidas.deslikes;
+    }
+
+    function adicionarEventosComentarios(publicacao) {
+        const comentarioLista = publicacao.querySelector(".comentarios-lista");
+        const numComentarios = publicacao.querySelector(".num-comentarios");
+        const comentariosItens = comentarioLista.querySelectorAll(".comentario-item");
+
+        comentariosItens.forEach(item => {
+            const editarBtn = item.querySelector(".editar");
+            const excluirBtn = item.querySelector(".excluir");
+            const comentarioId = item.getAttribute("data-comentario-id");
+
+            if (editarBtn) {
+                editarBtn.removeEventListener("click", () => {}); // Remove eventos antigos para evitar duplicação
+                editarBtn.addEventListener("click", () => {
+                    const textoAtual = item.querySelector("p").textContent.split(": ")[1];
+                    editarComentario(item, comentarioId, textoAtual);
+                });
+            }
+
+            if (excluirBtn) {
+                excluirBtn.removeEventListener("click", () => {}); // Remove eventos antigos para evitar duplicação
+                excluirBtn.addEventListener("click", () => excluirComentario(comentarioId, item, numComentarios));
+            }
+        });
+    }
+
+    async function atualizarInteracao(publicacaoId, tipoInteracao, likeBtn, dislikeBtn, likeCount, dislikeCount, usuarioCurtidas) {
+        const currentInteracao = usuarioCurtidas.interacoes[publicacaoId] || 'none';
+
+        const response = await fetch('/interacao', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                usuarioId: usuarioLogadoId,
+                publicacaoId: publicacaoId,
+                tipo_interacao: tipoInteracao
+            })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            likeCount.textContent = data.curtidas.likes;
+            dislikeCount.textContent = data.curtidas.deslikes;
+            totalLikes.textContent = data.usuarioLikes;
+            totalDislikes.textContent = data.usuarioDislikes;
+
+            usuarioCurtidas.interacoes[publicacaoId] = tipoInteracao;
+
+            if (tipoInteracao === "like") {
+                likeBtn.classList.add("active");
+                likeBtn.src = "images/flecha_cima_cheia.svg";
+                dislikeBtn.classList.remove("active");
+                dislikeBtn.src = "images/flecha_baixo_vazia.svg";
+            } else if (tipoInteracao === "deslike") {
+                dislikeBtn.classList.add("active");
+                dislikeBtn.src = "images/flecha_baixo_cheia.svg";
+                likeBtn.classList.remove("active");
+                likeBtn.src = "images/flecha_cima_vazia.svg";
+            } else {
+                likeBtn.classList.remove("active");
+                dislikeBtn.classList.remove("active");
+                likeBtn.src = "images/flecha_cima_vazia.svg";
+                dislikeBtn.src = "images/flecha_baixo_vazia.svg";
+            }
+        } else {
+            alert(data.message);
+        }
+    }
+
+    function editarComentario(comentarioElement, comentarioId, textoAtual) {
+        const novoTexto = prompt("Edite seu comentário:", textoAtual);
+        if (novoTexto !== null && novoTexto.trim() !== "") {
+            fetch('/editar-comentario', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    comentarioId: comentarioId,
+                    usuarioId: usuarioLogadoId,
+                    texto: novoTexto
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    comentarioElement.querySelector("p").textContent = `${usuarioLogado}: ${novoTexto}`;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Erro ao editar comentário:", error));
+        }
+    }
+
+    function excluirComentario(comentarioId, comentarioElement, numComentarios) {
+        const modalExcluir = document.createElement("div");
+        modalExcluir.classList.add("modal-excluir");
+        modalExcluir.innerHTML = `
+            <div class="modal-excluir-conteudo">
+                <p>Tem certeza que deseja excluir este comentário?</p>
+                <button id="btn-excluir-sim">Sim</button>
+                <button id="btn-excluir-nao">Não</button>
+            </div>
+        `;
+        document.body.appendChild(modalExcluir);
+        modalExcluir.style.display = "block";
+
+        document.getElementById("btn-excluir-sim").addEventListener("click", () => {
+            fetch('/excluir-comentario', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    comentarioId: comentarioId,
+                    usuarioId: usuarioLogadoId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    comentarioElement.remove();
+                    numComentarios.textContent = parseInt(numComentarios.textContent) - 1;
+                    modalExcluir.remove();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Erro ao excluir comentário:", error));
+        });
+
+        document.getElementById("btn-excluir-nao").addEventListener("click", () => {
+            modalExcluir.remove();
+        });
+    }
+
+    function editarPublicacao(publicacaoElement, publicacaoId) {
+        const nomePet = publicacaoElement.querySelector("h3").textContent;
+        const [localPet, cidadePet] = publicacaoElement.querySelector("p").textContent.split(" - ");
+
+        document.getElementById("nome-pet-editar").value = nomePet;
+        document.getElementById("local-pet-editar").value = localPet;
+        document.getElementById("cidade-pet-editar").value = cidadePet;
+        document.getElementById("foto-pet-editar").value = "";
+        if (mensagemErroEditar) mensagemErroEditar.textContent = "";
+
+        modalEditarPet.style.display = "block";
+
+        btnSalvarEditar.onclick = () => {
+            const fotoInput = document.getElementById("foto-pet-editar");
+            const nomePetNovo = document.getElementById("nome-pet-editar").value;
+            const localPetNovo = document.getElementById("local-pet-editar").value;
+            const cidadePetNovo = document.getElementById("cidade-pet-editar").value;
+
+            if (!nomePetNovo || !localPetNovo || !cidadePetNovo) {
+                if (mensagemErroEditar) mensagemErroEditar.textContent = "Todos os campos de texto são obrigatórios.";
+                return;
+            }
+
+            const formData = new FormData();
+            if (fotoInput.files[0]) formData.append("foto", fotoInput.files[0]);
+            formData.append("nome_pet", nomePetNovo);
+            formData.append("local", localPetNovo);
+            formData.append("cidade", cidadePetNovo);
+            formData.append("publicacaoId", publicacaoId);
+            formData.append("usuarioId", usuarioLogadoId);
+
+            fetch('/editar-publicacao', {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    publicacaoElement.querySelector("h3").textContent = nomePetNovo;
+                    publicacaoElement.querySelector("p").textContent = `${localPetNovo} - ${cidadePetNovo}`;
+                    if (data.foto) publicacaoElement.querySelector("img").src = data.foto;
+                    modalEditarPet.style.display = "none";
+                    limparModalEditar();
+                    if (window.location.pathname.includes("minhas-publicacoes.html")) carregarMinhasPublicacoes();
+                } else if (mensagemErroEditar) {
+                    mensagemErroEditar.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao editar publicação:', error);
+                if (mensagemErroEditar) mensagemErroEditar.textContent = "Ocorreu um erro. Tente novamente.";
+            });
+        };
+
+        btnCancelarEditar.onclick = () => {
+            modalEditarPet.style.display = "none";
+            limparModalEditar();
+        };
+    }
+
+    function excluirPublicacao(publicacaoId, publicacaoElement) {
+        const modalExcluir = document.createElement("div");
+        modalExcluir.classList.add("modal-excluir");
+        modalExcluir.innerHTML = `
+            <div class="modal-excluir-conteudo">
+                <p>Tem certeza que deseja excluir esta publicação?</p>
+                <button id="btn-excluir-sim">Sim</button>
+                <button id="btn-excluir-nao">Não</button>
+            </div>
+        `;
+        document.body.appendChild(modalExcluir);
+        modalExcluir.style.display = "block";
+
+        document.getElementById("btn-excluir-sim").addEventListener("click", () => {
+            fetch('/excluir-publicacao', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    publicacaoId: parseInt(publicacaoId),
+                    usuarioId: parseInt(usuarioLogadoId)
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    publicacaoElement.nextSibling.remove();
+                    publicacaoElement.remove();
+                    modalExcluir.remove();
+                    if (window.location.pathname.includes("minhas-publicacoes.html")) carregarMinhasPublicacoes();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao excluir publicação:", error);
+                alert("Ocorreu um erro ao excluir a publicação. Veja o console para mais detalhes.");
+            });
+        });
+
+        document.getElementById("btn-excluir-nao").addEventListener("click", () => {
+            modalExcluir.remove();
+        });
+    }
+
+    function limparModalEditar() {
+        document.getElementById("foto-pet-editar").value = "";
+        document.getElementById("nome-pet-editar").value = "";
+        document.getElementById("local-pet-editar").value = "";
+        document.getElementById("cidade-pet-editar").value = "";
+        if (mensagemErroEditar) mensagemErroEditar.textContent = "";
+    }
+
+    carregarPublicacoes();
+});
+    </script>
+        <script src="script.js"></script>
+    </body>
+</html>
